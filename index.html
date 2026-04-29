@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare — Universidad del Rosario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vino:        #7A1530;
+            --vino-deep:   #5A0E22;
+            --vino-light:  #9E2040;
+            --vino-pale:   #F5E8EC;
+            --vino-mist:   #FAF2F4;
+            --gold:        #C9A96E;
+            --gold-light:  #E8D5B0;
+            --cream:       #FDF8F3;
+            --text-dark:   #1A0A10;
+            --text-mid:    #5C3345;
+            --text-muted:  #9E7585;
+            --white:       #FFFFFF;
+            --shadow-sm:   0 2px 12px rgba(122,21,48,0.08);
+            --shadow-md:   0 8px 32px rgba(122,21,48,0.12);
+            --shadow-lg:   0 20px 60px rgba(122,21,48,0.16);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 20%, rgba(122,21,48,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 90% 80%, rgba(201,169,110,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Patrón geométrico sutil */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 40px,
+                rgba(122,21,48,0.015) 40px,
+                rgba(122,21,48,0.015) 41px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── TOGGLE MENÚ ─── */
+        .menu-toggle {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: var(--white);
+            border: 1.5px solid rgba(122,21,48,0.15);
+            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            box-shadow: var(--shadow-sm);
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1000;
+            color: var(--vino);
+            transition: all 0.25s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .menu-toggle:hover {
+            background: var(--vino-pale);
+            border-color: var(--vino);
+            transform: scale(1.05);
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -380px;
+            width: 360px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: 4px 0 40px rgba(122,21,48,0.12);
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+            padding: 0;
+            overflow-y: auto;
+            border-right: 1px solid rgba(122,21,48,0.08);
+        }
+        .sidebar.active { left: 0; }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 60%, var(--vino-light) 100%);
+            padding: 48px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar-header::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .sidebar-header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.12);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .sidebar-logo-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .sidebar-logo h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-logo p {
+            color: var(--gold-light);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-tagline {
+            color: rgba(255,255,255,0.75);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .sidebar-body { padding: 28px 32px; }
+
+        .sidebar-section {
+            margin-bottom: 28px;
+        }
+        .sidebar-section h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--vino);
+            margin-bottom: 10px;
+        }
+        .sidebar-section p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-mid);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: linear-gradient(to right, rgba(122,21,48,0.12), transparent);
+            margin: 20px 0;
+        }
+
+        .close-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,10,16,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* ─── TARJETA PRINCIPAL ─── */
+        .card {
+            background: var(--white);
+            width: 92%;
+            max-width: 440px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(122,21,48,0.06);
+            animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 36px 40px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.1);
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            margin-bottom: 14px;
+            font-size: 26px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+        .card-header .subtitle {
+            color: var(--gold-light);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body { padding: 36px 40px 32px; }
+
+        /* Separador con oro */
+        .gold-line {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            border: 1.5px solid rgba(122,21,48,0.12);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--vino-mist);
+            color: var(--text-dark);
+            transition: all 0.25s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--vino);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(122,21,48,0.08);
+        }
+        input::placeholder { color: var(--text-muted); }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--vino-deep), var(--vino));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(122,21,48,0.3);
+        }
+        .btn-primary:active { transform: scale(0.98) translateY(0); }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+        .link-text {
+            color: var(--vino);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .link-text:hover { text-decoration: underline; }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1.5px solid rgba(122,21,48,0.15);
+            border-radius: 10px;
+            color: var(--vino);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            width: 100%;
+            justify-content: center;
+            padding: 10px;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: var(--vino-pale);
+            border-color: var(--vino);
+        }
+
+        /* ─── CHAT ─── */
+        #chat-section {
+            display: none;
+            flex-direction: column;
+            height: 88vh;
+            max-width: 640px;
+            padding: 0;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-radius: 24px 24px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: -20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .chat-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .chat-header-info p {
+            color: var(--gold-light);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #5DE0A5;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: var(--cream);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 18px;
+            max-width: 78%;
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
+        .msg-student {
+            background: linear-gradient(135deg, var(--vino), var(--vino-light));
+            color: var(--white);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(122,21,48,0.2);
+        }
+        .msg-bot {
+            background: var(--white);
+            color: var(--text-dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(122,21,48,0.06);
+        }
+        .alert-badge {
+            display: inline-block;
+            font-size: 12px;
+            color: #C0392B;
+            font-weight: 700;
+            margin-top: 8px;
+            background: #FDEDEC;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #F5B7B1;
+        }
+
+        .chat-footer {
+            background: var(--white);
+            padding: 20px 28px;
+            border-radius: 0 0 24px 24px;
+            border-top: 1px solid rgba(122,21,48,0.06);
+        }
+
+        #message-input-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        #message-input-container input {
+            flex-grow: 1;
+            margin: 0;
+            padding: 13px 18px 13px 18px;
+        }
+        #message-input-container button {
+            width: auto;
+            padding: 13px 22px;
+            margin: 0;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(122,21,48,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--vino); }
+
+        /* ─── PANTALLA DE EMOCIÓN ─── */
+        #emotion-section {
+            display: none;
+            position: relative;
+            z-index: 1;
+            animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        .emotion-card {
+            background: var(--white);
+            width: 92%;
+            max-width: 480px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid rgba(122,21,48,0.06);
+        }
+
+        .emotion-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 28px 40px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .emotion-header::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+        .emotion-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 4px;
+        }
+        .emotion-header p {
+            color: var(--gold-light);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .emotion-body {
+            padding: 28px 32px 32px;
+        }
+
+        .emotion-subtitle {
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .emotion-grid-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 66%;
+            margin: 0 auto 28px auto;
+        }
+
+        .emotion-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px 12px;
+            border: 1.5px solid rgba(122,21,48,0.12);
+            border-radius: 16px;
+            background: var(--vino-mist);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-mid);
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+        .emotion-btn:hover {
+            border-color: var(--vino);
+            background: var(--vino-pale);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(122,21,48,0.12);
+            color: var(--vino);
+        }
+        .emotion-btn.selected {
+            border-color: var(--vino);
+            background: var(--vino-pale);
+            box-shadow: 0 0 0 3px rgba(122,21,48,0.15);
+            color: var(--vino);
+            font-weight: 600;
+        }
+        .emotion-btn svg {
+            width: 32px;
+            height: 32px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: color 0.2s;
+        }
+        .emotion-btn.selected svg {
+            stroke: var(--vino);
+        }
+
+        /* Chip de institución */
+        .institution-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(201,169,110,0.15);
+            border: 1px solid rgba(201,169,110,0.3);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        /* --- BOTÓN DE SALIDA --- */
+        .btn-exit-chat {
+            margin-left: auto;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+        .btn-exit-chat:hover {
+            background: rgba(255,255,255,0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button class="close-btn" onclick="toggleSidebar()">✕</button>
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">🌿</div>
+                <div>
+                    <h2>CampusCare</h2>
+                    <p>Universidad del Rosario</p>
+                </div>
+            </div>
+            <p class="sidebar-tagline">Acompañamiento emocional inteligente para la comunidad rosarista.</p>
+        </div>
+
+        <div class="sidebar-body">
+            <div class="sidebar-section">
+                <h3>Acerca del Proyecto</h3>
+                <p>CampusCare es una plataforma de acompañamiento emocional desarrollada como Proyecto Keystone. Brindamos una primera línea de apoyo a estudiantes universitarios, usando análisis de lenguaje para detectar riesgos tempranos y conectarlos con recursos de bienestar.</p>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3>Sobre Nosotros</h3>
+                <p>Somos un equipo multidisciplinario de estudiantes comprometidos con la salud mental de la comunidad rosarista. Creemos que la tecnología debe ser un puente para la empatía y el cuidado colectivo.</p>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3>Confidencialidad</h3>
+                <p>Todas tus conversaciones son privadas y seguras. Este espacio está diseñado para que puedas expresarte libremente sin juicio.</p>
+            </div>
+
+            <button id="btn-logout-sidebar" class="btn-logout" style="display: none;" onclick="logout()">
+                🚪 Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <div id="auth-section" class="card">
+        <div class="card-header">
+            <div class="logo-badge">🌿</div>
+            <h1>CampusCare</h1>
+            <p class="subtitle">Universidad del Rosario</p>
+        </div>
+        <div class="card-body">
+            <div class="gold-line"></div>
+
+            <div id="login-form">
+                <div class="input-wrap">
+                    <span class="input-icon">✉️</span>
+                    <input type="email" id="email" placeholder="Correo universitario" value="juan@estudiante.edu.co">
+                </div>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="password" placeholder="Contraseña" value="123">
+                </div>
+                <button class="btn-primary" onclick="login()">Iniciar Sesión</button>
+                <p class="register-link">
+                    ¿No tienes cuenta? <a href="#" class="link-text" onclick="register()">Regístrate aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="emotion-section">
+        <div class="emotion-card">
+            <div class="emotion-header">
+                <h2>¿Cómo te sientes hoy?</h2>
+                <p>Cuéntanos para acompañarte mejor</p>
+            </div>
+            <div class="emotion-body">
+                <p class="emotion-subtitle">Selecciona la emoción que mejor describe cómo te encuentras en este momento</p>
+
+                <div class="emotion-grid">
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'triste')">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15.5s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5"/></svg>
+                        Triste
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'ansioso')">
+                        <svg viewBox="0 0 24 24"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="16" y1="17" x2="16" y2="21"/></svg>
+                        Ansioso
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'estresado')">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Estresado
+                    </button>
+                </div>
+                <div class="emotion-grid-bottom">
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'frustrado')">
+                        <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                        Frustrado
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'calmado')">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5"/></svg>
+                        Calmado
+                    </button>
+                </div>
+
+                <button class="btn-primary" id="btn-continue-emotion" onclick="continueFromEmotion()" style="opacity:0.5; pointer-events:none;">
+                    Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-section" class="card">
+        <div class="chat-header">
+            <div class="chat-avatar">🌿</div>
+            <div class="chat-header-info">
+                <h2>CampusCare</h2>
+                <p><span class="status-dot"></span> Espacio seguro y confidencial</p>
+            </div>
+            <button class="btn-exit-chat" onclick="logout()">Salir</button>
+        </div>
+
+        <div id="chat-window">
+            <div class="message msg-bot">¡Hola! Estoy aquí para escucharte en un entorno seguro y confidencial. ¿Cómo te sientes hoy?</div>
+        </div>
+
+        <div class="chat-footer">
+            <div id="message-input-container">
+                <input type="text" id="chat-input" placeholder="Escribe tu mensaje aquí..." onkeypress="handleKeyPress(event)">
+                <button class="btn-primary" onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        const API_URL = "http://127.0.0.1:8000/api";
+        let ws;
+        let currentStudentId = "";
+        let selectedEmotion = null;
+
+        // Mensajes de bienvenida personalizados por emoción
+        const emotionMessages = {
+            triste: "Noto que hoy te sientes triste. Estoy aquí para escucharte con calma y sin juicio. ¿Quieres contarme qué está pasando?",
+            ansioso: "Entiendo que estás sintiendo ansiedad. Tomemos esto con calma. ¿Hay algo específico que te está generando esa sensación hoy?",
+            estresado: "Parece que tienes mucha presión encima. Estoy aquí para ayudarte a ordenar los pensamientos. ¿Qué es lo que más te está agobiando?",
+            frustrado: "La frustración a veces es muy agotadora. Cuéntame qué pasó — este es un espacio seguro para ti.",
+            calmado: "Qué bueno que te encuentras calmado hoy. ¿Hay algo en lo que te pueda acompañar o simplemente quieres conversar?"
+        };
+
+        async function register() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombre: "Estudiante Prueba", correo: email, password: password })
+                });
+                if (response.ok) {
+                    alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                } else {
+                    const error = await response.json();
+                    alert("Error: " + error.detail);
+                }
+            } catch (error) {
+                alert("Error de red: No se pudo conectar con el servidor para registrar.");
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ correo: email, password: password })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    currentStudentId = data.student_id;
+                    // Mostrar pantalla de emoción antes del chat
+                    document.getElementById("auth-section").style.display = "none";
+                    document.getElementById("emotion-section").style.display = "flex";
+                    document.getElementById("btn-logout-sidebar").style.display = "flex";
+                } else {
+                    alert("Credenciales incorrectas o usuario no registrado.");
+                }
+            } catch (error) {
+                alert("Error de conexión: El servidor (Backend) no está respondiendo. Asegúrate de encenderlo.");
+                console.error("Fetch Error:", error);
+            }
+        }
+
+        function selectEmotion(btn, emotion) {
+            document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedEmotion = emotion;
+            const continueBtn = document.getElementById('btn-continue-emotion');
+            continueBtn.style.opacity = '1';
+            continueBtn.style.pointerEvents = 'auto';
+        }
+
+        async function continueFromEmotion() {
+            if (!selectedEmotion) return;
+            // Intentar guardar emoción en el backend
+            try {
+                await fetch(`${API_URL}/analysis/emotion`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ student_id: currentStudentId, emotion: selectedEmotion })
+                });
+            } catch (e) {
+                console.warn("No se pudo guardar la emoción en el servidor:", e);
+            }
+            // Ir al chat
+            document.getElementById("emotion-section").style.display = "none";
+            const chatSection = document.getElementById("chat-section");
+            chatSection.style.display = "flex";
+            // Actualizar mensaje de bienvenida según emoción
+            const chatWindow = document.getElementById("chat-window");
+            chatWindow.innerHTML = `<div class="message msg-bot">${emotionMessages[selectedEmotion]}</div>`;
+            connectWebSocket();
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://127.0.0.1:8000/api/ws/chat/${currentStudentId}`);
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                let msgHtml = `<div class="message msg-bot">${data.text}`;
+                if (data.risk === "crítico") {
+                    msgHtml += `<span class="alert-badge">⚠️ Protocolo de alerta activado (Riesgo Alto)</span>`;
+                }
+                msgHtml += `</div>`;
+                appendHtmlToChat(msgHtml);
+            };
+            ws.onerror = function() {
+                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">Error: Desconectado del servidor de IA.</span></div>`);
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById("chat-input");
+            const text = input.value.trim();
+            if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+            appendHtmlToChat(`<div class="message msg-student">${text}</div>`);
+            ws.send(text);
+            input.value = "";
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === "Enter") sendMessage();
+        }
+
+        function appendHtmlToChat(html) {
+            const chatWindow = document.getElementById("chat-window");
+            chatWindow.innerHTML += html;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function logout() {
+            if (ws) ws.close();
+            selectedEmotion = null;
+            document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+            const continueBtn = document.getElementById('btn-continue-emotion');
+            continueBtn.style.opacity = '0.5';
+            continueBtn.style.pointerEvents = 'none';
+            document.getElementById("chat-section").style.display = "none";
+            document.getElementById("emotion-section").style.display = "none";
+            document.getElementById("auth-section").style.display = "block";
+            document.getElementById("btn-logout-sidebar").style.display = "none";
+            toggleSidebar();
+        }
+    </script>
+</body>
+</html>
