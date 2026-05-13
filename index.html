@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare — Universidad del Rosario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vino:        #7A1530;
+            --vino-deep:   #5A0E22;
+            --vino-light:  #9E2040;
+            --vino-pale:   #F5E8EC;
+            --vino-mist:   #FAF2F4;
+            --gold:        #C9A96E;
+            --gold-light:  #E8D5B0;
+            --gold-deep:   #A88846;
+            --cream:       #FDF8F3;
+            --text-dark:   #1A0A10;
+            --text-mid:    #5C3345;
+            --text-muted:  #9E7585;
+            --white:       #FFFFFF;
+            --leaf:        #4A7C59;
+            --leaf-soft:   #A8C09B;
+            --shadow-sm:   0 2px 12px rgba(122,21,48,0.08);
+            --shadow-md:   0 8px 32px rgba(122,21,48,0.12);
+            --shadow-lg:   0 20px 60px rgba(122,21,48,0.16);
+            --shadow-xl:   0 30px 80px rgba(122,21,48,0.22);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 20%, rgba(122,21,48,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 90% 80%, rgba(201,169,110,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 30% 30% at 50% 100%, rgba(168,192,155,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 40px,
+                rgba(122,21,48,0.012) 40px,
+                rgba(122,21,48,0.012) 41px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── NAV SUPERIOR ─── */
+        .top-nav {
+            position: fixed;
+            top: 22px;
+            left: 22px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: var(--white);
+            border: 1.5px solid rgba(122,21,48,0.15);
+            color: var(--vino);
+            padding: 11px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 13.5px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
+            letter-spacing: 0.2px;
+        }
+        .nav-btn:hover {
+            background: var(--vino-pale);
+            transform: translateY(-1px);
+            border-color: var(--vino);
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--vino-deep), var(--vino));
+            color: var(--white);
+            border-color: transparent;
+        }
+        .nav-btn.primary:hover {
+            box-shadow: 0 8px 22px rgba(122,21,48,0.32);
+            background: linear-gradient(135deg, var(--vino), var(--vino-light));
+        }
+
+        /* ─── HOME ─── */
+        .home-container {
+            min-height: 100vh;
+            padding: 110px 24px 60px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        .home-hero {
+            max-width: 920px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 60px;
+            animation: cardIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        .home-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201,169,110,0.16);
+            border: 1px solid rgba(201,169,110,0.32);
+            border-radius: 24px;
+            padding: 8px 18px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .home-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 6vw, 62px);
+            font-weight: 700;
+            color: var(--vino-deep);
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+        }
+        .home-hero h1 .accent {
+            color: var(--vino);
+            position: relative;
+            display: inline-block;
+        }
+        .home-hero h1 .accent::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: 6px;
+            height: 10px;
+            background: linear-gradient(90deg, var(--gold-light), var(--gold));
+            opacity: 0.45;
+            z-index: -1;
+            border-radius: 4px;
+        }
+        .home-hero p.lead {
+            font-size: 17.5px;
+            color: var(--text-mid);
+            line-height: 1.7;
+            max-width: 640px;
+            margin: 0 auto 36px;
+        }
+        .home-cta {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-primary {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--vino-deep), var(--vino));
+            color: var(--white);
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 28px rgba(122,21,48,0.28);
+            transition: all 0.25s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(122,21,48,0.38); }
+        .cta-secondary {
+            padding: 16px 32px;
+            background: var(--white);
+            color: var(--vino);
+            border: 1.5px solid rgba(122,21,48,0.2);
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .cta-secondary:hover { background: var(--vino-pale); border-color: var(--vino); transform: translateY(-2px); }
+
+        .home-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            width: 100%;
+            margin-bottom: 56px;
+        }
+        .info-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(122,21,48,0.06);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardIn 0.6s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        .info-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--vino), var(--gold));
+        }
+        .info-card-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--vino-pale), var(--vino-mist));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(122,21,48,0.08);
+        }
+        .info-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--vino-deep);
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .info-card p {
+            font-size: 14.5px;
+            line-height: 1.7;
+            color: var(--text-mid);
+        }
+        .feature-list {
+            list-style: none;
+            margin-top: 16px;
+            padding: 0;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 0;
+            font-size: 13.5px;
+            color: var(--text-mid);
+        }
+        .feature-list li::before {
+            content: '✓';
+            color: var(--gold-deep);
+            font-weight: 700;
+            font-size: 11px;
+            background: rgba(201,169,110,0.18);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .home-footer {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid rgba(122,21,48,0.08);
+            max-width: 1100px;
+            width: 100%;
+        }
+        .home-footer p + p { margin-top: 6px; }
+
+        /* ─── AUTH (Login / Register) ─── */
+        .auth-wrap {
+            min-height: 100vh;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 460px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid rgba(122,21,48,0.06);
+            animation: cardIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .auth-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 34px 40px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -20px;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.12);
+        }
+        .logo-badge {
+            display: inline-flex;
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            margin-bottom: 14px;
+            font-size: 26px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-header .subtitle {
+            color: var(--gold-light);
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-body { padding: 32px 40px; }
+        .gold-line {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin-bottom: 24px;
+        }
+
+        /* INPUTS */
+        .input-wrap { position: relative; margin-bottom: 16px; }
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            border: 1.5px solid rgba(122,21,48,0.12);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--vino-mist);
+            color: var(--text-dark);
+            transition: all 0.25s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--vino);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(122,21,48,0.08);
+        }
+        input::placeholder { color: var(--text-muted); }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--vino-deep), var(--vino));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(122,21,48,0.3);
+        }
+        .btn-primary:active { transform: scale(0.98) translateY(0); }
+
+        .form-foot {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+        .link-text {
+            color: var(--vino);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .link-text:hover { text-decoration: underline; }
+
+        /* ─── EMOCIÓN ─── */
+        #emotion-section {
+            min-height: 100vh;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .emotion-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 620px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid rgba(122,21,48,0.06);
+            animation: cardIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        .emotion-header {
+            background: linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 28px 40px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .emotion-header::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+        .emotion-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            position: relative;
+            z-index: 1;
+        }
+        .emotion-header p {
+            color: var(--gold-light);
+            font-size: 12.5px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            position: relative;
+            z-index: 1;
+            margin-top: 4px;
+        }
+        .emotion-body { padding: 28px 32px 32px; }
+        .emotion-subtitle {
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .emotion-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 14px 8px;
+            border: 1.5px solid rgba(122,21,48,0.12);
+            border-radius: 14px;
+            background: var(--vino-mist);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-mid);
+            font-size: 12.5px;
+            font-weight: 500;
+            min-height: 86px;
+        }
+        .emotion-btn:hover {
+            border-color: var(--vino);
+            background: var(--vino-pale);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(122,21,48,0.12);
+            color: var(--vino);
+        }
+        .emotion-btn.selected {
+            border-color: var(--vino);
+            background: var(--vino-pale);
+            box-shadow: 0 0 0 3px rgba(122,21,48,0.15);
+            color: var(--vino);
+            font-weight: 600;
+        }
+        .emotion-btn .emoji {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .emotion-btn.unknown {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 14px;
+            min-height: 70px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, var(--vino-pale), var(--vino-mist));
+            border-style: dashed;
+            text-align: left;
+            justify-content: flex-start;
+        }
+        .emotion-btn.unknown:hover {
+            background: linear-gradient(135deg, rgba(122,21,48,0.10), var(--vino-pale));
+            border-style: solid;
+        }
+        .emotion-btn.unknown .emoji { font-size: 32px; }
+        .unknown-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .unknown-content .title { font-weight: 700; font-size: 14px; color: var(--vino); }
+        .unknown-content .sub { font-size: 11.5px; color: var(--text-muted); }
+
+        /* ─── CHAT ─── */
+        #chat-section {
+            display: none;
+            min-height: 100vh;
+            padding: 70px 16px 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .chat-shell {
+            max-width: 980px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            animation: cardIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        @media (min-width: 900px) {
+            .chat-shell { grid-template-columns: 1fr 290px; }
+        }
+        .chat-card {
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 86px);
+            min-height: 580px;
+            border: 1px solid rgba(122,21,48,0.06);
+        }
+        .chat-header {
+            background:
+                linear-gradient(135deg, var(--vino-deep) 0%, var(--vino) 55%, var(--vino-light) 100%);
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,169,110,0.18), transparent 70%);
+        }
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 30%;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+        }
+        .chat-avatar {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.30), rgba(255,255,255,0.10));
+            border: 1.5px solid rgba(255,255,255,0.32);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            position: relative;
+            z-index: 2;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 6px 14px rgba(0,0,0,0.12);
+            flex-shrink: 0;
+        }
+        .chat-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; right: -2px;
+            width: 14px; height: 14px;
+            background: #5DE0A5;
+            border-radius: 50%;
+            border: 2px solid var(--vino);
+            box-shadow: 0 0 0 2px rgba(93,224,165,0.3);
+            animation: pulse-dot 2.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50%     { transform: scale(1.18); opacity: 0.85; }
+        }
+        .chat-header-info { flex: 1; position: relative; z-index: 2; min-width: 0; }
+        .chat-header-info h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .chat-header-info p {
+            color: var(--gold-light);
+            font-size: 12px;
+            margin-top: 2px;
+            opacity: 0.95;
+        }
+        .btn-exit-chat {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+        .btn-exit-chat:hover { background: rgba(255,255,255,0.28); }
+
+        /* Frase de cuidado del día */
+        .care-quote {
+            background: linear-gradient(to right, var(--vino-mist), var(--vino-pale), var(--vino-mist));
+            padding: 12px 28px;
+            font-size: 12.5px;
+            color: var(--text-mid);
+            font-style: italic;
+            text-align: center;
+            border-bottom: 1px solid rgba(122,21,48,0.06);
+        }
+        .care-quote::before {
+            content: '✦ ';
+            color: var(--gold-deep);
+            font-style: normal;
+        }
+
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 24px 28px 16px;
+            background:
+                linear-gradient(180deg, var(--cream) 0%, rgba(245,232,236,0.35) 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+        }
+        #chat-window::before {
+            content: '';
+            position: absolute;
+            top: 10%; right: -50px;
+            width: 220px; height: 220px;
+            background: radial-gradient(circle, rgba(168,192,155,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        #chat-window::after {
+            content: '';
+            position: absolute;
+            bottom: 12%; left: -40px;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(201,169,110,0.10) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 18px;
+            max-width: 76%;
+            font-size: 14.5px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            animation: msgIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            word-wrap: break-word;
+        }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0)   scale(1); }
+        }
+        .msg-student {
+            background: linear-gradient(135deg, var(--vino) 0%, var(--vino-light) 100%);
+            color: var(--white);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 6px 16px rgba(122,21,48,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .msg-bot {
+            background: var(--white);
+            color: var(--text-dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 16px rgba(122,21,48,0.08), 0 1px 3px rgba(0,0,0,0.04);
+            border: 1px solid rgba(122,21,48,0.06);
+            margin-left: 40px;
+            position: relative;
+        }
+        .msg-bot::before {
+            content: '🌿';
+            position: absolute;
+            left: -36px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--vino-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 1.5px solid var(--white);
+            box-shadow: 0 2px 6px rgba(122,21,48,0.12);
+        }
+        @media (max-width: 600px) { .msg-bot { margin-left: 36px; max-width: 82%; } }
+
+        .alert-badge {
+            display: inline-block;
+            font-size: 12px;
+            color: #C0392B;
+            font-weight: 700;
+            margin-top: 8px;
+            background: #FDEDEC;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #F5B7B1;
+        }
+
+        /* typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 14px 18px;
+            background: var(--white);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            margin-left: 40px;
+            box-shadow: 0 4px 16px rgba(122,21,48,0.08);
+            border: 1px solid rgba(122,21,48,0.06);
+            position: relative;
+        }
+        .typing-indicator::before {
+            content: '🌿';
+            position: absolute;
+            left: -36px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--vino-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 1.5px solid var(--white);
+            box-shadow: 0 2px 6px rgba(122,21,48,0.12);
+        }
+        .typing-indicator span {
+            width: 8px; height: 8px;
+            background: var(--vino-light);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%,60%,100% { transform: translateY(0);   opacity: 0.5; }
+            30%         { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Quick-action chips */
+        .chat-chips {
+            display: flex;
+            gap: 8px;
+            padding: 10px 28px 0;
+            flex-wrap: wrap;
+            background: var(--white);
+            border-top: 1px solid rgba(122,21,48,0.04);
+        }
+        .chip {
+            background: var(--vino-mist);
+            border: 1px solid rgba(122,21,48,0.12);
+            color: var(--vino);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .chip:hover {
+            background: var(--vino-pale);
+            border-color: var(--vino);
+            transform: translateY(-1px);
+        }
+
+        .chat-footer {
+            background: var(--white);
+            padding: 14px 28px 18px;
+            border-top: 1px solid rgba(122,21,48,0.04);
+        }
+        #message-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: var(--vino-mist);
+            border: 1.5px solid rgba(122,21,48,0.10);
+            border-radius: 16px;
+            padding: 4px 4px 4px 14px;
+            transition: all 0.25s ease;
+        }
+        #message-input-container:focus-within {
+            border-color: var(--vino);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(122,21,48,0.06);
+        }
+        #message-input-container input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 4px;
+            font-size: 14.5px;
+        }
+        #message-input-container input:focus {
+            box-shadow: none;
+            background: transparent;
+        }
+        #message-input-container button {
+            border: none;
+            background: linear-gradient(135deg, var(--vino-deep), var(--vino));
+            color: var(--white);
+            padding: 12px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+        #message-input-container button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(122,21,48,0.25);
+        }
+
+        /* ─── PANEL LATERAL DEL CHAT: JARDÍN INTERIOR ─── */
+        .chat-side {
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            height: fit-content;
+            border: 1px solid rgba(122,21,48,0.06);
+        }
+        @media (min-width: 900px) {
+            .chat-side { position: sticky; top: 86px; }
+        }
+        .garden-card {
+            background: linear-gradient(160deg, #FDF8F3 0%, #F5E8EC 100%);
+            border-radius: 16px;
+            padding: 18px 16px;
+            border: 1px solid rgba(168,192,155,0.30);
+            position: relative;
+            overflow: hidden;
+        }
+        .garden-card::before {
+            content: '';
+            position: absolute;
+            top: -20px; right: -20px;
+            width: 70px; height: 70px;
+            background: radial-gradient(circle, rgba(201,169,110,0.20), transparent 70%);
+            border-radius: 50%;
+        }
+        .garden-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--vino-deep);
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+        .garden-subtitle {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .garden-canvas {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            min-height: 96px;
+            background: linear-gradient(180deg, rgba(168,192,155,0.10) 0%, rgba(168,192,155,0.28) 100%);
+            border-radius: 10px;
+            padding: 8px 6px 6px;
+            align-items: end;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .garden-canvas::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(180deg, #8B7355 0%, #5B4A38 100%);
+            border-radius: 0 0 10px 10px;
+        }
+        .plant {
+            font-size: 20px;
+            text-align: center;
+            line-height: 1;
+            animation: grow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            cursor: help;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes grow {
+            from { transform: translateY(18px) scale(0.4); opacity: 0; }
+            to   { transform: translateY(0)    scale(1);   opacity: 1; }
+        }
+        .garden-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 18px 4px;
+            font-style: italic;
+        }
+        .garden-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11.5px;
+            color: var(--text-mid);
+            padding-top: 12px;
+            margin-top: 10px;
+            border-top: 1px dashed rgba(122,21,48,0.10);
+            position: relative;
+            z-index: 1;
+        }
+        .garden-stat strong {
+            color: var(--vino);
+            font-size: 13px;
+        }
+        .tip-card {
+            background: linear-gradient(135deg, var(--vino-pale), var(--vino-mist));
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(122,21,48,0.08);
+        }
+        .tip-card h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--vino-deep);
+            font-size: 14.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .tip-card p {
+            font-size: 12.5px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+        .sos-btn {
+            background: linear-gradient(135deg, #C0392B, #E74C3C);
+            color: var(--white);
+            border: none;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+            box-shadow: 0 6px 16px rgba(192,57,43,0.20);
+        }
+        .sos-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(192,57,43,0.35); }
+
+        /* SOS modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,10,16,0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+            animation: cardIn 0.35s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        .modal h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--vino-deep);
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .modal p { color: var(--text-mid); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+        .modal .helpline {
+            background: var(--vino-pale);
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal .helpline strong { color: var(--vino-deep); }
+        .modal .helpline small { color: var(--text-muted); font-size: 11.5px; }
+        .modal .helpline a {
+            color: var(--vino);
+            font-weight: 600;
+            text-decoration: none;
+            background: var(--white);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(122,21,48,0.15);
+        }
+        .modal-close {
+            background: var(--vino-mist);
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--vino);
+            cursor: pointer;
+            margin-top: 12px;
+            font-family: 'DM Sans', sans-serif;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: var(--vino-pale); }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(122,21,48,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--vino); }
+
+        @media (max-width: 600px) {
+            .home-hero h1 { font-size: 36px; }
+            .home-info { grid-template-columns: 1fr; }
+            .auth-body { padding: 28px 24px; }
+            .emotion-grid { grid-template-columns: repeat(2, 1fr); }
+            .top-nav { top: 14px; left: 14px; gap: 8px; }
+            .nav-btn { padding: 9px 14px; font-size: 12.5px; }
+            .chat-card { height: calc(100vh - 70px); }
+            #chat-section { padding: 64px 10px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <button class="nav-btn" id="nav-login" onclick="showAuth('login')">Iniciar Sesión</button>
+        <button class="nav-btn primary" id="nav-register" onclick="showAuth('register')">Registrarme</button>
+        <button class="nav-btn" id="nav-home" onclick="showHome()" style="display:none;">← Inicio</button>
+    </nav>
+
+    <section id="home-section" class="home-container">
+        <div class="home-hero">
+            <span class="home-badge">✦ Universidad del Rosario</span>
+            <h1>Acompañamiento emocional <span class="accent">inteligente</span></h1>
+            <p class="lead">
+                CampusCare es tu primera línea de apoyo emocional dentro del campus rosarista.
+                Un espacio seguro, confidencial y disponible las 24 horas — donde lo que sientes importa.
+            </p>
+            <div class="home-cta">
+                <button class="cta-primary" onclick="showAuth('register')">Comenzar ahora</button>
+                <button class="cta-secondary" onclick="showAuth('login')">Ya tengo una cuenta</button>
+            </div>
+        </div>
+
+        <div class="home-info">
+            <div class="info-card">
+                <div class="info-card-icon">🌿</div>
+                <h3>Acerca del Proyecto</h3>
+                <p>
+                    CampusCare es una plataforma de acompañamiento emocional desarrollada como
+                    <strong>Proyecto Keystone</strong>. Brindamos una primera línea de apoyo a estudiantes
+                    universitarios, usando análisis de lenguaje para detectar riesgos tempranos y
+                    conectarlos con recursos de bienestar.
+                </p>
+                <ul class="feature-list">
+                    <li>Detección temprana con NLP</li>
+                    <li>Conexión con recursos institucionales</li>
+                    <li>Protocolos guiados por psicología</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-icon">🤝</div>
+                <h3>Sobre Nosotros</h3>
+                <p>
+                    Somos un equipo multidisciplinario de estudiantes comprometidos con la salud mental
+                    de la comunidad rosarista. Creemos que la tecnología debe ser un puente para la
+                    empatía y el cuidado colectivo.
+                </p>
+                <ul class="feature-list">
+                    <li>Diseñado por y para estudiantes</li>
+                    <li>Psicología, IA y diseño en un mismo lugar</li>
+                    <li>Comprometidos con el bienestar</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-icon">🔒</div>
+                <h3>Confidencialidad</h3>
+                <p>
+                    Todas tus conversaciones son privadas y seguras. Este espacio está diseñado para
+                    que puedas expresarte libremente sin juicio. Solo activamos protocolos de alerta
+                    cuando detectamos señales claras de riesgo, siempre en favor de tu seguridad.
+                </p>
+                <ul class="feature-list">
+                    <li>Conversaciones cifradas</li>
+                    <li>Sin juicio, sin etiquetas</li>
+                    <li>Protocolos solo en caso de riesgo</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-icon">🌱</div>
+                <h3>Tu Jardín Interior</h3>
+                <p>
+                    Lo que nos hace únicos: cada conversación deja una <strong>semilla</strong> en tu
+                    propio Jardín Interior. Una representación visual de tu camino emocional que crece
+                    contigo, recordándote que el bienestar es un proceso, no un destino.
+                </p>
+                <ul class="feature-list">
+                    <li>Bitácora visual de tu progreso</li>
+                    <li>Privada y solo para ti</li>
+                    <li>Inspirada en la jardinería terapéutica</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer class="home-footer">
+            <p>Proyecto Keystone · Universidad del Rosario · Bogotá, Colombia</p>
+            <p style="font-style: italic;">
+                Si estás en crisis, llama al <strong>106</strong> (Línea de salud mental Bogotá) o al <strong>123</strong>.
+            </p>
+        </footer>
+    </section>
+
+    <section id="login-section" class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo-badge">🌿</div>
+                <h1>Bienvenido de nuevo</h1>
+                <p class="subtitle">Iniciar Sesión</p>
+            </div>
+            <div class="auth-body">
+                <div class="gold-line"></div>
+                <div class="input-wrap">
+                    <span class="input-icon">✉️</span>
+                    <input type="email" id="login-email" placeholder="Correo universitario">
+                </div>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="login-password" placeholder="Contraseña" onkeypress="if(event.key==='Enter') login()">
+                </div>
+                <button class="btn-primary" onclick="login()">Iniciar Sesión</button>
+                <p class="form-foot">¿No tienes cuenta? <a class="link-text" onclick="showAuth('register')">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="register-section" class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo-badge">🌿</div>
+                <h1>Crea tu cuenta</h1>
+                <p class="subtitle">Registro</p>
+            </div>
+            <div class="auth-body">
+                <div class="gold-line"></div>
+                <div class="input-wrap">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="reg-name" placeholder="Nombres completos">
+                </div>
+                <div class="input-wrap">
+                    <span class="input-icon">✉️</span>
+                    <input type="email" id="reg-email" placeholder="Correo universitario">
+                </div>
+                <div class="input-wrap">
+                    <span class="input-icon">📞</span>
+                    <input type="tel" id="reg-phone" placeholder="Número telefónico">
+                </div>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="reg-password" placeholder="Contraseña" onkeypress="if(event.key==='Enter') register()">
+                </div>
+                <button class="btn-primary" onclick="register()">Crear cuenta</button>
+                <p class="form-foot">¿Ya tienes cuenta? <a class="link-text" onclick="showAuth('login')">Inicia sesión</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="emotion-section">
+        <div class="emotion-card">
+            <div class="emotion-header">
+                <h2>¿Cómo te sientes hoy?</h2>
+                <p>Cuéntanos para acompañarte mejor</p>
+            </div>
+            <div class="emotion-body">
+                <p class="emotion-subtitle">
+                    Selecciona la emoción que más se acerca a cómo te encuentras en este momento.
+                </p>
+                <div class="emotion-grid">
+                    <button class="emotion-btn" onclick="selectEmotion(this,'triste')"><span class="emoji">😔</span>Triste</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'ansioso')"><span class="emoji">😰</span>Ansioso</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'estresado')"><span class="emoji">😣</span>Estresado</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'frustrado')"><span class="emoji">😤</span>Frustrado</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'calmado')"><span class="emoji">😌</span>Calmado</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'feliz')"><span class="emoji">😊</span>Feliz</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'enojado')"><span class="emoji">😠</span>Enojado</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'cansado')"><span class="emoji">😩</span>Cansado</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'solo')"><span class="emoji">🥺</span>Solo</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'agradecido')"><span class="emoji">🙏</span>Agradecido</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'confundido')"><span class="emoji">😕</span>Confundido</button>
+                    <button class="emotion-btn" onclick="selectEmotion(this,'esperanzado')"><span class="emoji">✨</span>Esperanzado</button>
+                    <button class="emotion-btn unknown" onclick="selectEmotion(this,'desconocido')">
+                        <span class="emoji">🤍</span>
+                        <div class="unknown-content">
+                            <span class="title">No sé cómo me siento</span>
+                            <span class="sub">Llévame directo al chat, lo descubrimos juntos</span>
+                        </div>
+                    </button>
+                </div>
+                <button class="btn-primary" id="btn-continue-emotion" onclick="continueFromEmotion()" style="opacity:0.5;pointer-events:none;">Continuar</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="chat-section">
+        <div class="chat-shell">
+            <div class="chat-card">
+                <div class="chat-header">
+                    <div class="chat-avatar">🌿</div>
+                    <div class="chat-header-info">
+                        <h2 id="chat-title">CampusCare</h2>
+                        <p id="chat-subtitle">Tu compañero rosarista — confidencial y siempre presente</p>
+                    </div>
+                    <button class="btn-exit-chat" onclick="logout()">Salir</button>
+                </div>
+
+                <div class="care-quote" id="care-quote">
+                    Hoy mereces el mismo cuidado que ofreces a los demás.
+                </div>
+
+                <div id="chat-window"></div>
+
+                <div class="chat-chips" id="chat-chips">
+                    <button class="chip" onclick="quickAction('respirar')">🌬️ Necesito respirar</button>
+                    <button class="chip" onclick="quickAction('desahogo')">💧 Solo desahogarme</button>
+                    <button class="chip" onclick="quickAction('escucha')">🎧 Quiero ser escuchado</button>
+                    <button class="chip" onclick="quickAction('ayuda')">🆘 Necesito ayuda</button>
+                </div>
+
+                <div class="chat-footer">
+                    <div id="message-input-container">
+                        <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="chat-side">
+                <div class="garden-card">
+                    <div class="garden-title">🌱 Tu Jardín Interior</div>
+                    <p class="garden-subtitle">
+                        Cada visita siembra una semilla en tu camino emocional. Las plantas que crecen aquí solo las ves tú.
+                    </p>
+                    <div class="garden-canvas" id="garden-canvas">
+                        <div class="garden-empty">Tu jardín empezará a florecer hoy 🌷</div>
+                    </div>
+                    <div class="garden-stat">
+                        <span>Visitas totales</span>
+                        <strong id="garden-count">0</strong>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <h4>✦ Recordatorio del día</h4>
+                    <p id="tip-text">Sentir no es fallar. Sentir es habitar.</p>
+                </div>
+
+                <button class="sos-btn" onclick="openSOS()">🚨 Necesito ayuda urgente</button>
+            </aside>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="sos-modal">
+        <div class="modal">
+            <h3>Estás acompañado 💛</h3>
+            <p>
+                Si sientes que estás en crisis, no estás solo. Estas líneas son gratuitas,
+                confidenciales y están disponibles 24/7:
+            </p>
+            <div class="helpline">
+                <span><strong>106</strong><br><small>Línea de la vida — Bogotá</small></span>
+                <a href="tel:106">Llamar</a>
+            </div>
+            <div class="helpline">
+                <span><strong>123</strong><br><small>Emergencias</small></span>
+                <a href="tel:123">Llamar</a>
+            </div>
+            <div class="helpline">
+                <span><strong>Centro de Bienestar UR</strong><br><small>Universidad del Rosario</small></span>
+                <a href="tel:+5712970200">Contacto</a>
+            </div>
+            <button class="modal-close" onclick="closeSOS()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://keystone-proyect.onrender.com/api";
+        let ws;
+        let currentStudentId = "";
+        let currentName = "";
+        let selectedEmotion = null;
+
+        const emotionMessages = {
+            triste:       "noto que hoy te sientes triste. Estoy aquí para escucharte con calma y sin juicio. ¿Quieres contarme qué está pasando?",
+            ansioso:      "entiendo que estás sintiendo ansiedad. Tomemos esto con calma. ¿Hay algo específico que te está generando esa sensación hoy?",
+            estresado:    "parece que tienes mucha presión encima. Estoy aquí para ayudarte a ordenar los pensamientos. ¿Qué es lo que más te está agobiando?",
+            frustrado:    "la frustración a veces es muy agotadora. Cuéntame qué pasó — este es un espacio seguro para ti.",
+            calmado:      "qué bueno que te encuentras en calma hoy. ¿Hay algo en lo que te pueda acompañar o simplemente quieres conversar?",
+            feliz:        "me alegra mucho saberlo. ¿Quieres compartir qué te tiene así de bien? También es valioso celebrar los buenos momentos.",
+            enojado:      "el enojo casi siempre tiene una razón detrás. ¿Quieres contarme qué disparó esa sensación?",
+            cansado:      "el cansancio a veces no es solo del cuerpo. ¿De qué tipo es el tuyo hoy?",
+            solo:         "estar contigo en este momento ya es una forma de no estarlo. Cuéntame, ¿qué te ha llevado a sentirte así?",
+            agradecido:   "qué hermoso que llegues con gratitud. ¿Hacia qué o hacia quién va dirigida hoy?",
+            confundido:   "la confusión es solo una pausa antes de la claridad. ¿Qué es lo que te tiene dando vueltas?",
+            esperanzado:  "la esperanza es una semilla poderosa. Cuéntame, ¿qué te tiene mirando hacia adelante?",
+            desconocido:  "está bien no saber. A veces lo que sentimos no tiene nombre todavía. Estoy aquí, sin prisa. ¿Por qué no me cuentas qué pasó hoy y vamos descubriéndolo juntos?"
+        };
+
+        const emotionPlants = {
+            triste: '🌧️', ansioso: '🌪️', estresado: '⚡', frustrado: '🔥',
+            calmado: '🌿', feliz: '🌻', enojado: '🌶️', cansado: '🌑',
+            solo: '🌒', agradecido: '🌸', confundido: '🍃', esperanzado: '✨',
+            desconocido: '🌱'
+        };
+
+        const careQuotes = [
+            "Hoy mereces el mismo cuidado que ofreces a los demás.",
+            "Sentir mucho no es debilidad — es estar despierto.",
+            "Lo que nombras pierde poder sobre ti.",
+            "No tienes que tenerlo todo claro hoy. Solo este momento.",
+            "Respirar profundo también es una forma de cuidarte.",
+            "Tu historia importa, aunque hoy parezca pequeña.",
+            "Pedir ayuda es una forma de coraje silencioso."
+        ];
+
+        const tips = [
+            "Sentir no es fallar. Sentir es habitar.",
+            "Tres respiraciones profundas pueden cambiar un día.",
+            "Tu valor no depende de tu productividad.",
+            "Las pausas también son progreso.",
+            "Llorar es una forma legítima de soltar.",
+            "Hoy basta con hacerlo posible, no perfecto."
+        ];
+
+        function hideAll() {
+            ['home-section','login-section','register-section','emotion-section','chat-section'].forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+        }
+        function showHome() {
+            hideAll();
+            document.getElementById('home-section').style.display = 'flex';
+            document.getElementById('nav-login').style.display = '';
+            document.getElementById('nav-register').style.display = '';
+            document.getElementById('nav-home').style.display = 'none';
+        }
+        function showAuth(mode) {
+            hideAll();
+            document.getElementById(mode + '-section').style.display = 'flex';
+            document.getElementById('nav-home').style.display = '';
+            document.getElementById('nav-login').style.display = mode === 'login' ? 'none' : '';
+            document.getElementById('nav-register').style.display = mode === 'register' ? 'none' : '';
+        }
+        function showEmotion() {
+            hideAll();
+            document.getElementById('emotion-section').style.display = 'flex';
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-register').style.display = 'none';
+            document.getElementById('nav-home').style.display = 'none';
+        }
+        function showChat() {
+            hideAll();
+            document.getElementById('chat-section').style.display = 'block';
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-register').style.display = 'none';
+            document.getElementById('nav-home').style.display = 'none';
+        }
+
+        async function register() {
+            const name     = document.getElementById('reg-name').value.trim();
+            const email    = document.getElementById('reg-email').value.trim();
+            const phone    = document.getElementById('reg-phone').value.trim();
+            const password = document.getElementById('reg-password').value;
+            if (!name || !email || !phone || !password) {
+                alert('Por favor completa todos los campos.');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: name, correo: email, password: password, telefono: phone
+                    })
+                });
+                if (response.ok) {
+                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                    document.getElementById('login-email').value = email;
+                    showAuth('login');
+                } else {
+                    let detail = 'No se pudo registrar.';
+                    try { detail = (await response.json()).detail || detail; } catch {}
+                    alert('Error: ' + detail);
+                }
+            } catch (error) {
+                alert('Error de red: No se pudo conectar con el servidor para registrar.');
+                console.error(error);
+            }
+        }
+
+        async function login() {
+            const email    = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) { alert('Ingresa tu correo y contraseña.'); return; }
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo: email, password: password })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    currentStudentId = data.student_id;
+                    currentName = data.nombre || email.split('@')[0];
+                    showEmotion();
+                } else {
+                    alert('Credenciales incorrectas o usuario no registrado.');
+                }
+            } catch (error) {
+                alert('Error de conexión: el servidor no responde. Asegúrate de que esté encendido.');
+                console.error(error);
+            }
+        }
+
+        function selectEmotion(btn, emotion) {
+            document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedEmotion = emotion;
+            if (emotion === 'desconocido') { continueFromEmotion(); return; }
+            const c = document.getElementById('btn-continue-emotion');
+            c.style.opacity = '1';
+            c.style.pointerEvents = 'auto';
+        }
+
+        async function continueFromEmotion() {
+            if (!selectedEmotion) return;
+            try {
+                await fetch(`${API_URL}/analysis/emotion`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ student_id: currentStudentId, emotion: selectedEmotion })
+                });
+            } catch (e) { console.warn('No se pudo guardar la emoción:', e); }
+            addToGarden(selectedEmotion);
+            showChat();
+            initChatUI();
+            connectWebSocket();
+        }
+
+        function initChatUI() {
+            const firstName = (currentName || '').split(' ')[0] || 'amig@';
+            document.getElementById('chat-title').innerText = `Hola, ${firstName}`;
+            document.getElementById('chat-subtitle').innerText = 'Tu compañero rosarista — confidencial y siempre presente';
+            document.getElementById('care-quote').innerText = careQuotes[Math.floor(Math.random() * careQuotes.length)];
+            document.getElementById('tip-text').innerText = tips[Math.floor(Math.random() * tips.length)];
+
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.innerHTML = '';
+            const opener = emotionMessages[selectedEmotion] || emotionMessages['desconocido'];
+            const greeting = `Hola, <strong>${escapeHtml(firstName)}</strong> 👋. ${capitalize(opener)}`;
+            appendHtmlToChat(`<div class="message msg-bot">${greeting}</div>`);
+            renderGarden();
+        }
+
+        function connectWebSocket() {
+            let wsUrl;
+            try {
+                const u = new URL(API_URL);
+                wsUrl = (u.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + u.host + u.pathname + '/ws/chat/' + encodeURIComponent(currentStudentId);
+            } catch (e) {
+                wsUrl = `ws://127.0.0.1:8000/api/ws/chat/${encodeURIComponent(currentStudentId)}`;
+            }
+            try { ws = new WebSocket(wsUrl); }
+            catch (e) {
+                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">No pude abrir la conexión con el servidor de IA.</span></div>`);
+                return;
+            }
+            ws.onmessage = function(event) {
+                hideTyping();
+                let data;
+                try { data = JSON.parse(event.data); } catch { data = { text: event.data }; }
+                let msgHtml = `<div class="message msg-bot">${data.text}`;
+                if (data.risk === 'crítico') {
+                    msgHtml += `<span class="alert-badge">⚠️ Protocolo de alerta activado (Riesgo Alto)</span>`;
+                }
+                msgHtml += `</div>`;
+                appendHtmlToChat(msgHtml);
+            };
+            ws.onerror = function() {
+                hideTyping();
+                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">Estoy teniendo problemas para conectarme. Verifica el servidor o tu conexión.</span></div>`);
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendHtmlToChat(`<div class="message msg-student">${escapeHtml(text)}</div>`);
+            input.value = '';
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(text); showTyping();
+            } else {
+                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">No estás conectado al servidor de IA. Reintentando…</span></div>`);
+                connectWebSocket();
+            }
+        }
+
+        function quickAction(kind) {
+            const phrases = {
+                respirar: 'Necesito un momento para respirar.',
+                desahogo: 'Solo quiero desahogarme un poco.',
+                escucha:  'Solo necesito que alguien me escuche.',
+                ayuda:    'Necesito ayuda con algo importante.'
+            };
+            const input = document.getElementById('chat-input');
+            input.value = phrases[kind] || '';
+            input.focus();
+        }
+
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+        function appendHtmlToChat(html) {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.insertAdjacentHTML('beforeend', html);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function showTyping() {
+            hideTyping();
+            const t = document.createElement('div');
+            t.className = 'typing-indicator';
+            t.id = 'typing-indicator';
+            t.innerHTML = '<span></span><span></span><span></span>';
+            const cw = document.getElementById('chat-window');
+            cw.appendChild(t);
+            cw.scrollTop = cw.scrollHeight;
+        }
+        function hideTyping() {
+            const t = document.getElementById('typing-indicator');
+            if (t) t.remove();
+        }
+
+        function gardenKey() { return 'campuscare_garden_' + (currentStudentId || 'anon'); }
+        function loadGarden() {
+            try { return JSON.parse(localStorage.getItem(gardenKey()) || '[]'); }
+            catch { return []; }
+        }
+        function saveGarden(g) {
+            try { localStorage.setItem(gardenKey(), JSON.stringify(g.slice(-30))); } catch {}
+        }
+        function addToGarden(emotion) {
+            const g = loadGarden();
+            g.push({ emotion, date: new Date().toISOString() });
+            saveGarden(g);
+        }
+        function renderGarden() {
+            const canvas = document.getElementById('garden-canvas');
+            const g = loadGarden();
+            canvas.innerHTML = '';
+            if (g.length === 0) {
+                canvas.innerHTML = '<div class="garden-empty">Tu jardín empezará a florecer hoy 🌷</div>';
+            } else {
+                g.slice(-12).forEach(entry => {
+                    const plant = emotionPlants[entry.emotion] || '🌱';
+                    const date = new Date(entry.date).toLocaleDateString('es-CO', { day:'numeric', month:'short' });
+                    const el = document.createElement('div');
+                    el.className = 'plant';
+                    el.title = `${capitalize(entry.emotion)} · ${date}`;
+                    el.textContent = plant;
+                    canvas.appendChild(el);
+                });
+            }
+            document.getElementById('garden-count').innerText = g.length;
+        }
+
+        function openSOS()  { document.getElementById('sos-modal').classList.add('active'); }
+        function closeSOS() { document.getElementById('sos-modal').classList.remove('active'); }
+
+        function logout() {
+            if (ws) try { ws.close(); } catch {}
+            selectedEmotion = null;
+            currentStudentId = '';
+            currentName = '';
+            document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+            const c = document.getElementById('btn-continue-emotion');
+            c.style.opacity = '0.5';
+            c.style.pointerEvents = 'none';
+            ['login-email','login-password','reg-name','reg-email','reg-phone','reg-password'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            showHome();
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            }[c]));
+        }
+        function capitalize(s) {
+            if (!s) return '';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        showHome();
+    </script>
+</body>
+</html>
