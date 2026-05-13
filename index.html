@@ -727,11 +727,13 @@
             overflow-y: auto;
             padding: 24px 28px 16px;
             background:
-                linear-gradient(180deg, var(--cream) 0%, rgba(245,232,236,0.35) 100%);
+                url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%237A1530' stroke-width='0.6' stroke-opacity='0.06'><path d='M40 14c-4 8-12 12-18 12 0 8 6 14 14 16 4-6 8-14 8-22 0-2-2-4-4-6z'/><path d='M40 14c4 8 12 12 18 12 0 8-6 14-14 16-4-6-8-14-8-22 0-2 2-4 4-6z'/><path d='M40 32v22'/></g></svg>") repeat,
+                linear-gradient(180deg, var(--cream) 0%, rgba(245,232,236,0.45) 100%);
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 18px;
             position: relative;
+            scroll-behavior: smooth;
         }
         #chat-window::before {
             content: '';
@@ -801,6 +803,37 @@
             box-shadow: 0 2px 6px rgba(122,21,48,0.12);
         }
         @media (max-width: 600px) { .msg-bot { margin-left: 36px; max-width: 82%; } }
+
+        /* Timestamp de mensajes */
+        .msg-time {
+            display: block;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0.85;
+        }
+        .msg-student .msg-time {
+            color: rgba(255,255,255,0.75);
+            text-align: right;
+        }
+
+        /* Variante para mensajes de error/sistema (más suaves) */
+        .msg-bot.error {
+            background: linear-gradient(135deg, #FFF5F2 0%, #FDEDE6 100%);
+            border-color: rgba(192,57,43,0.18);
+            color: #A93226;
+            font-size: 13.5px;
+            font-style: italic;
+            box-shadow: 0 3px 12px rgba(192,57,43,0.10);
+            max-width: 70%;
+        }
+        .msg-bot.error::before {
+            content: '⚠️';
+            background: #FFE0DC;
+            border-color: rgba(192,57,43,0.20);
+        }
 
         .alert-badge {
             display: inline-block;
@@ -893,16 +926,20 @@
             display: flex;
             gap: 10px;
             align-items: center;
-            background: var(--vino-mist);
+            background: rgba(250,242,244,0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1.5px solid rgba(122,21,48,0.10);
-            border-radius: 16px;
-            padding: 4px 4px 4px 14px;
-            transition: all 0.25s ease;
+            border-radius: 18px;
+            padding: 4px 4px 4px 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(122,21,48,0.05);
         }
         #message-input-container:focus-within {
             border-color: var(--vino);
             background: var(--white);
-            box-shadow: 0 0 0 4px rgba(122,21,48,0.06);
+            box-shadow: 0 0 0 4px rgba(122,21,48,0.08), 0 6px 20px rgba(122,21,48,0.10);
+            transform: translateY(-1px);
         }
         #message-input-container input {
             flex-grow: 1;
@@ -1426,7 +1463,23 @@
     </div>
 
     <script>
-        const API_URL = "https://keystone-proyect.onrender.com/api";
+        // Detectar si estamos en desarrollo local (file:// o localhost)
+        const IS_LOCAL = (
+            location.protocol === 'file:' ||
+            location.hostname === 'localhost' ||
+            location.hostname === '127.0.0.1' ||
+            location.hostname === ''
+        );
+
+        // En local apuntamos al backend de tu PC; en producción al de Render.
+        const API_URL = IS_LOCAL
+            ? "http://127.0.0.1:8000/api"
+            : "https://keystone-proyect.onrender.com/api";
+
+        const WS_URL  = IS_LOCAL
+            ? "ws://127.0.0.1:8000/api"
+            : "wss://keystone-proyect.onrender.com/api";
+
         let ws;
         let currentStudentId = "";
         let currentName = "";
@@ -1600,37 +1653,32 @@
             chatWindow.innerHTML = '';
             const opener = emotionMessages[selectedEmotion] || emotionMessages['desconocido'];
             const greeting = `Hola, <strong>${escapeHtml(firstName)}</strong> 👋. ${capitalize(opener)}`;
-            appendHtmlToChat(`<div class="message msg-bot">${greeting}</div>`);
+            appendBotMessage(greeting);
             renderGarden();
         }
 
         function connectWebSocket() {
-            let wsUrl;
-            try {
-                const u = new URL(API_URL);
-                wsUrl = (u.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + u.host + u.pathname + '/ws/chat/' + encodeURIComponent(currentStudentId);
-            } catch (e) {
-                wsUrl = `ws://127.0.0.1:8000/api/ws/chat/${encodeURIComponent(currentStudentId)}`;
-            }
+            const wsUrl = `${WS_URL}/ws/chat/${encodeURIComponent(currentStudentId)}`;
+            console.log('[CampusCare] Conectando WS a:', wsUrl);
             try { ws = new WebSocket(wsUrl); }
             catch (e) {
-                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">No pude abrir la conexión con el servidor de IA.</span></div>`);
+                appendBotMessage('No pude abrir la conexión con el servidor de IA.', { error: true });
                 return;
             }
             ws.onmessage = function(event) {
                 hideTyping();
                 let data;
                 try { data = JSON.parse(event.data); } catch { data = { text: event.data }; }
-                let msgHtml = `<div class="message msg-bot">${data.text}`;
+                const isError = typeof data.text === 'string' && /error de conexi/i.test(data.text);
+                let inner = data.text;
                 if (data.risk === 'crítico') {
-                    msgHtml += `<span class="alert-badge">⚠️ Protocolo de alerta activado (Riesgo Alto)</span>`;
+                    inner += `<span class="alert-badge">⚠️ Protocolo de alerta activado (Riesgo Alto)</span>`;
                 }
-                msgHtml += `</div>`;
-                appendHtmlToChat(msgHtml);
+                appendBotMessage(inner, { error: isError });
             };
             ws.onerror = function() {
                 hideTyping();
-                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">Estoy teniendo problemas para conectarme. Verifica el servidor o tu conexión.</span></div>`);
+                appendBotMessage('Estoy teniendo problemas para conectarme. Verifica el servidor o tu conexión.', { error: true });
             };
         }
 
@@ -1638,12 +1686,12 @@
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
-            appendHtmlToChat(`<div class="message msg-student">${escapeHtml(text)}</div>`);
+            appendStudentMessage(text);
             input.value = '';
             if (ws && ws.readyState === WebSocket.OPEN) {
                 ws.send(text); showTyping();
             } else {
-                appendHtmlToChat(`<div class="message msg-bot"><span style="color:#C0392B">No estás conectado al servidor de IA. Reintentando…</span></div>`);
+                appendBotMessage('No estás conectado al servidor de IA. Reintentando…', { error: true });
                 connectWebSocket();
             }
         }
@@ -1666,6 +1714,23 @@
             const chatWindow = document.getElementById('chat-window');
             chatWindow.insertAdjacentHTML('beforeend', html);
             chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function currentTimeLabel() {
+            const d = new Date();
+            return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function appendBotMessage(innerHtml, opts) {
+            opts = opts || {};
+            const cls = opts.error ? 'message msg-bot error' : 'message msg-bot';
+            const time = currentTimeLabel();
+            appendHtmlToChat(`<div class="${cls}">${innerHtml}<span class="msg-time">${time}</span></div>`);
+        }
+
+        function appendStudentMessage(text) {
+            const time = currentTimeLabel();
+            appendHtmlToChat(`<div class="message msg-student">${escapeHtml(text)}<span class="msg-time">${time}</span></div>`);
         }
 
         function showTyping() {
@@ -1737,6 +1802,19 @@
 
         function escapeHtml(s) {
             return String(s).replace(/[&<>"']/g, c => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            }[c]));
+        }
+        function capitalize(s) {
+            if (!s) return '';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        showHome();
+    </script>
+</body>
+</html>
+         return String(s).replace(/[&<>"']/g, c => ({
                 '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
             }[c]));
         }

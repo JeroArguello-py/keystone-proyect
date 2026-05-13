@@ -23,13 +23,14 @@ Analiza el mensaje del estudiante y devuelve ÚNICAMENTE un objeto JSON válido 
 
 async def analyze_and_respond(message: str) -> dict:
     try:
-        # 3. Llamada a la API usando la nueva sintaxis asíncrona (aio) y el modelo 2.5
+        # 3. Llamada a la API usando la nueva sintaxis asíncrona (aio)
+        # Usamos gemini-2.0-flash-lite porque tiene 1500 RPD gratis (la mas alta del free tier)
         response = await client.aio.models.generate_content(
-            model='gemini-2.5-flash', # <-- ¡El modelo que sí tienes en tu lista!
+            model='gemini-2.0-flash-lite',
             contents=message,
             config=types.GenerateContentConfig(
                 system_instruction=instrucciones,
-                response_mime_type="application/json", # Forzamos el formato JSON
+                response_mime_type="application/json",  # Forzamos el formato JSON
                 temperature=0.7,
             )
         )
@@ -52,8 +53,20 @@ async def analyze_and_respond(message: str) -> dict:
         return data
         
     except Exception as e:
+        error_str = str(e)
         print(f"❌ ERROR EXACTO EN GEMINI: {e}")
-        return {"response": "Error de conexión con la IA.", "risk_level": "bajo"}
+        # Mensaje empático según el tipo de error
+        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "quota" in error_str.lower():
+            friendly = ("Lo siento, justo ahora mis circuitos están saturados (cuota diaria de IA alcanzada). "
+                        "Vuelve en unas horas — y mientras tanto, recuerda: respira profundo, "
+                        "tu Jardín Interior te espera. 🌱")
+        elif "API_KEY" in error_str or "401" in error_str or "permission" in error_str.lower():
+            friendly = ("No puedo conectarme con la IA en este momento (problema de credenciales). "
+                        "Avisa al equipo de Keystone para que lo revisen.")
+        else:
+            friendly = ("Estoy teniendo un problema técnico para responderte. "
+                        "Si sientes que necesitas ayuda urgente, recuerda que tienes el botón SOS a tu derecha.")
+        return {"response": friendly, "risk_level": "bajo"}
     
 from fastapi import APIRouter
 from pydantic import BaseModel
