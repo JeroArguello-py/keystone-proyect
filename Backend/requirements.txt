@@ -3,3 +3,4 @@ uvicorn
 sqlalchemy
 google-generativeai
 python-dotenv
+google-genai
