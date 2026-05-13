@@ -1671,7 +1671,7 @@
                 try { data = JSON.parse(event.data); } catch { data = { text: event.data }; }
                 const isError = typeof data.text === 'string' && /error de conexi/i.test(data.text);
                 let inner = data.text;
-                if (data.risk === 'crítico') {
+                if (data.risk === 'crítico' || data.risk === 'critico') {
                     inner += `<span class="alert-badge">⚠️ Protocolo de alerta activado (Riesgo Alto)</span>`;
                 }
                 appendBotMessage(inner, { error: isError });
